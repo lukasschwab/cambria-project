@@ -4,6 +4,16 @@ function assertNever(x: never): never {
   throw new Error(`Unexpected object: ${x}`)
 }
 
+const JSONSchema7TypeAny = [
+  'string',
+  'number',
+  'integer',
+  'boolean',
+  'object',
+  'array',
+  'null'
+]
+
 export function reverseLens(lens: LensSource): LensSource {
   return lens
     .slice()
@@ -29,6 +39,8 @@ function reverseLensOp(lensOp: LensOp): LensOp {
 
     case 'remove':
       return {
+        // If the remove op doesn't specify type, type is unknown.
+        ...{ type: JSONSchema7TypeAny },
         ...lensOp,
         op: 'add',
       }

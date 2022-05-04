@@ -50,10 +50,8 @@ function addProperty(schema, property) {
     const properties = Object.assign(Object.assign({}, origProperties), { [name]: propertyDefinition });
     const shouldAdd = isPropertyRequired !== false && !origRequired.includes(name);
     const required = [...origRequired, ...(shouldAdd ? [name] : [])];
-    return Object.assign(Object.assign({}, schema), {
-        properties,
-        required
-    });
+    return Object.assign(Object.assign({}, schema), { properties,
+        required });
 }
 function withNullable(schema, fn) {
     if (schema.anyOf) {
@@ -237,15 +235,11 @@ function wrapProperty(schema, op) {
     if (!supportsNull(prop)) {
         throw new Error(`Cannot wrap property '${op.name}' because it does not allow nulls, found ${deepInspect(schema)}`);
     }
-    return Object.assign(Object.assign({}, schema), {
-        properties: Object.assign(Object.assign({}, schema.properties), {
-            [op.name]: {
+    return Object.assign(Object.assign({}, schema), { properties: Object.assign(Object.assign({}, schema.properties), { [op.name]: {
                 type: 'array',
                 default: [],
                 items: removeNullSupport(prop) || { not: {} },
-            }
-        })
-    });
+            } }) });
 }
 function headProperty(schema, op) {
     if (!op.name) {
@@ -333,14 +327,10 @@ function convertValue(schema, lensOp) {
     if (!mapping) {
         throw new Error(`Missing mapping for 'convert'.\nFound:\n${JSON.stringify(lensOp)}`);
     }
-    return Object.assign(Object.assign({}, schema), {
-        properties: Object.assign(Object.assign({}, schema.properties), {
-            [name]: {
+    return Object.assign(Object.assign({}, schema), { properties: Object.assign(Object.assign({}, schema.properties), { [name]: {
                 type: destinationType,
                 default: defaults_1.defaultValuesByType(destinationType),
-            }
-        })
-    });
+            } }) });
 }
 function assertNever(x) {
     throw new Error(`Unexpected object: ${x}`);
@@ -373,7 +363,6 @@ function applyLensOperation(schema, op) {
     }
 }
 function updateSchema(schema, lens) {
-    console.log("#### LENS SOURCE", lens);
     return lens.reduce((schema, op) => {
         if (schema === undefined)
             throw new Error("Can't update undefined schema");
@@ -387,6 +376,7 @@ function schemaForLens(lens) {
         type: 'object',
         additionalProperties: false,
     };
+    console.log("#### LENS SOURCE", lens);
     return updateSchema(emptySchema, lens);
 }
 exports.schemaForLens = schemaForLens;

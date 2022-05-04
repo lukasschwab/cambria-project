@@ -4,6 +4,15 @@ exports.reverseLens = void 0;
 function assertNever(x) {
     throw new Error(`Unexpected object: ${x}`);
 }
+const JSONSchema7TypeAny = [
+    'string',
+    'number',
+    'integer',
+    'boolean',
+    'object',
+    'array',
+    'null'
+];
 function reverseLens(lens) {
     return lens
         .slice()
@@ -19,7 +28,7 @@ function reverseLensOp(lensOp) {
             return Object.assign(Object.assign({}, lensOp), { op: 'remove' });
         }
         case 'remove':
-            return Object.assign(Object.assign({}, lensOp), { op: 'add' });
+            return Object.assign(Object.assign({ type: JSONSchema7TypeAny }, lensOp), { op: 'add' });
         case 'wrap':
             return Object.assign(Object.assign({}, lensOp), { op: 'head' });
         case 'head':
