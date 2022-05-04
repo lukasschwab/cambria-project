@@ -32,8 +32,10 @@ function addProperty(schema: JSONSchema7, property: Property): JSONSchema7 {
   const { name, items, required: isPropertyRequired } = property
   let { type } = property
 
-  if (!name || !type) {
+  if (!name) {
     throw new Error(`Missing property name in addProperty.\nFound:\n${JSON.stringify(property)}`)
+  } else if (!type) {
+    throw new Error(`Missing property type in addProperty.\nFound:\n${JSON.stringify(property)}`)
   }
 
   if (Array.isArray(type)) {
@@ -48,9 +50,9 @@ function addProperty(schema: JSONSchema7, property: Property): JSONSchema7 {
   const propertyDefinition =
     type === 'array' && items
       ? {
-          ...arraylessPropertyDefinition,
-          items: { type: items.type, default: items.default || defaultValuesByType(items.type) },
-        }
+        ...arraylessPropertyDefinition,
+        items: { type: items.type, default: items.default || defaultValuesByType(items.type) },
+      }
       : arraylessPropertyDefinition
 
   const properties = { ...origProperties, [name]: propertyDefinition }
@@ -505,6 +507,8 @@ export function schemaForLens(lens: LensSource): JSONSchema7 {
     type: 'object' as const,
     additionalProperties: false,
   }
+
+  console.log("#### LENS SOURCE", lens)
 
   return updateSchema(emptySchema, lens)
 }
